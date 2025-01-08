@@ -6,25 +6,22 @@
     <title>Login</title>
 </head>
 <body>
-    <h2>Login to Your Account</h2>
-
-    <!-- Menampilkan pesan error jika ada -->
-    <?php if (session()->getFlashdata('error')) : ?>
-        <div style="color: red;">
-            <p><?= session()->getFlashdata('error') ?></p>
-        </div>
-    <?php endif; ?>
-
-    <form action="/auth/loginCheck" method="post">
+    <h2>Login</h2>
+    <form method="post" action="<?= site_url('auth/loginAction'); ?>">
         <label for="username">Username:</label>
-        <input type="text" name="username" id="username" value="<?= old('username') ?>" required><br><br>
+        <input type="text" name="username" required><br>
 
         <label for="password">Password:</label>
-        <input type="password" name="password" id="password" required><br><br>
+        <input type="password" name="password" required><br>
 
         <button type="submit">Login</button>
     </form>
 
-    <p>Don't have an account? <a href="/register">Register here</a></p>
+    <a href="<?= site_url('auth/register'); ?>">Daftar</a> |
+    <a href="<?= site_url('auth/lupapassword'); ?>">Lupa Password</a> <!-- Tombol Lupa Password -->
+
+    <?php if (session()->getFlashdata('error')): ?>
+        <p><?= session()->getFlashdata('error'); ?></p>
+    <?php endif; ?>
 </body>
 </html>

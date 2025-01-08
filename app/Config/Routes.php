@@ -5,12 +5,11 @@ use CodeIgniter\Router\RouteCollection;
 /**
  * @var RouteCollection $routes
  */
-$routes->get('/register', 'Auth::register');
-$routes->post('/auth/save', 'Auth::save');
-$routes->get('/login', 'Auth::login');
-$routes->post('/auth/loginCheck', 'Auth::loginCheck');
-$routes->get('/logout', 'Auth::logout');
+$routes->get('/auth/login', 'Auth::login');
+$routes->post('/auth/loginAction', 'Auth::loginAction');
+$routes->get('/auth/register', 'Auth::register');
+$routes->post('/auth/registerAction', 'Auth::registerAction');
+$routes->get('auth/lupapassword', 'Auth::lupapassword');
 
-// Routes untuk dashboard berdasarkan role
-$routes->get('/admin-dashboard', 'AdminController::index');
-$routes->get('/user-dashboard', 'UserController::index');
+$routes->get('/admin/dashboard', 'Admin::dashboard');
+$routes->get('/user/dashboard', 'User::dashboard');

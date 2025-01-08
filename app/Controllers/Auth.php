@@ -3,85 +3,91 @@
 namespace App\Controllers;
 
 use App\Models\UserModel;
-use CodeIgniter\Controller;
 
-class Auth extends Controller
+class Auth extends BaseController
 {
-    public function register()
-    {
-        return view('auth/register');
-    }
-
-    public function save()
-    {
-        $validation =  \Config\Services::validation();
-
-        // Validasi input
-        $rules = [
-            'username' => 'required|is_unique[users.username]',
-            'password' => 'required|min_length[6]',
-            'role' => 'required'
-        ];
-
-        if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
-        }
-
-        $model = new UserModel();
-        $data = [
-            'username' => $this->request->getPost('username'),
-            'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-            'role'     => $this->request->getPost('role')
-        ];
-
-        $model->save($data);
-        return redirect()->to('/login');
-    }
-
+    // Fungsi untuk menampilkan halaman login
     public function login()
     {
         return view('auth/login');
     }
 
-    public function loginCheck()
+    // Fungsi untuk menangani proses login
+    public function loginAction()
     {
-        $validation =  \Config\Services::validation();
-
-        // Validasi input login
-        $rules = [
-            'username' => 'required',
-            'password' => 'required'
-        ];
-
-        if (!$this->validate($rules)) {
-            return redirect()->back()->withInput()->with('errors', $validation->getErrors());
-        }
-
         $username = $this->request->getPost('username');
         $password = $this->request->getPost('password');
+
+        $userModel = new UserModel();
+
+        // Mencari pengguna berdasarkan username dan password
+        $user = $userModel->login($username, $password);
         
-        $model = new UserModel();
-        $user = $model->getUserByUsername($username);
+        if ($user) {
+            session()->set([
+                'user_id' => $user['id'],
+                'username' => $user['username'],
+                'role' => $user['role'],
+            ]);
 
-        if ($user && password_verify($password, $user['password'])) {
-            session()->set('user_id', $user['id']);
-            session()->set('username', $user['username']);
-            session()->set('role', $user['role']);
-
+            // Redirect berdasarkan role
             if ($user['role'] == 'admin') {
-                return redirect()->to('/admin-dashboard');
+                return redirect()->to('/admin/dashboard');
             } else {
-                return redirect()->to('/user-dashboard');
+                return redirect()->to('/user/dashboard');
             }
         } else {
-            session()->setFlashdata('error', 'Invalid username or password');
-            return redirect()->to('/login');
+            session()->setFlashdata('error', 'Username atau password salah');
+            return redirect()->to('/auth/login');
         }
     }
 
-    public function logout()
+    // Fungsi untuk lupa password
+    public function lupapassword()
+{
+    return view('auth/lupapassword'); // Pastikan view ini mengarah ke file lupapassword.php
+}
+
+
+
+    // Fungsi untuk menampilkan halaman register
+    public function register()
     {
-        session()->destroy();
-        return redirect()->to('/login');
+        return view('auth/register');
+    }
+
+    // Fungsi untuk menangani proses registrasi
+    public function registerAction()
+    {
+        $nama_lengkap = $this->request->getPost('nama_lengkap');
+        $username = $this->request->getPost('username');
+        $password = $this->request->getPost('password');
+        $confirm_password = $this->request->getPost('confirm_password');
+
+        // Validasi konfirmasi password
+        if ($password !== $confirm_password) {
+            session()->setFlashdata('error', 'Password dan konfirmasi password tidak cocok');
+            return redirect()->to('/auth/register');
+        }
+
+        $userModel = new UserModel();
+
+        // Cek jika username sudah terdaftar
+        if ($userModel->checkUsernameExists($username)) {
+            session()->setFlashdata('error', 'Username sudah terdaftar');
+            return redirect()->to('/auth/register');
+        }
+
+        // Daftarkan user baru
+        $data = [
+            'nama_lengkap' => $nama_lengkap,
+            'username' => $username,
+            'password' => $password, // Tidak di-hashing sesuai permintaan
+            'role' => 'user',
+        ];
+
+        $userModel->registerUser($data);
+        session()->setFlashdata('success', 'Registrasi berhasil, silakan login');
+        return redirect()->to('/auth/login');
     }
 }

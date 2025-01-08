@@ -6,30 +6,27 @@
     <title>Register</title>
 </head>
 <body>
-    <h2>Create an Account</h2>
+    <h2>Register</h2>
+    <form method="post" action="<?= site_url('auth/registerAction'); ?>">
+        <label for="nama_lengkap">Nama Lengkap:</label>
+        <input type="text" name="nama_lengkap" required><br>
 
-    <!-- Menampilkan pesan error jika ada -->
-    <?php if (session()->getFlashdata('errors')) : ?>
-        <div style="color: red;">
-            <ul>
-                <?php foreach (session()->getFlashdata('errors') as $error) : ?>
-                    <li><?= esc($error) ?></li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-    <?php endif; ?>
-
-    <form action="/auth/save" method="post">
         <label for="username">Username:</label>
-        <input type="text" name="username" id="username" value="<?= old('username') ?>" required><br><br>
+        <input type="text" name="username" required><br>
 
         <label for="password">Password:</label>
-        <input type="password" name="password" id="password" required><br><br>
+        <input type="password" name="password" required><br>
 
-        <label for="role">Role:</label>
-        <select name="role" id="role" required>
-            <option value="admin" <?= old('role') == 'admin' ? 'selected' : '' ?>>Admin</option>
-            <option value="user" <?= old('role') == 'user' ? 'selected' : '' ?>>User</option>
-        </select><br><br>
+        <label for="confirm_password">Konfirmasi Password:</label>
+        <input type="password" name="confirm_password" required><br>
 
-        <button type="submit">Regis
+        <button type="submit">Daftar</button>
+    </form>
+
+    <a href="<?= site_url('auth/login'); ?>">Sudah punya akun? Login</a>
+
+    <?php if (session()->getFlashdata('error')): ?>
+        <p><?= session()->getFlashdata('error'); ?></p>
+    <?php endif; ?>
+</body>
+</html>

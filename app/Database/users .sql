@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 06, 2025 at 05:31 PM
+-- Generation Time: Jan 07, 2025 at 09:40 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -29,9 +29,10 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
-  `username` varchar(100) NOT NULL,
+  `nama_lengkap` varchar(100) NOT NULL,
+  `username` varchar(50) NOT NULL,
   `password` varchar(255) NOT NULL,
-  `role` enum('admin','user') NOT NULL,
+  `role` enum('admin','user') DEFAULT 'user',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -40,11 +41,9 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `password`, `role`, `created_at`, `updated_at`) VALUES
-(1, 'admin', '*01A6717B58FF5C7EAFFF6CB7C96F7428EA65FE4C', 'admin', '2025-01-06 16:15:43', '2025-01-06 16:21:37'),
-(2, 'user', '*0D22657BD7E16A953E5DEF4EC9E5933C4931755C', 'user', '2025-01-06 16:15:43', '2025-01-06 16:21:37'),
-(3, 'edi', '$2y$12$CIqF8HYxTQn9a6Nq6uvE9.vDEVuwhucQhG4j6I3ypmIH3T54Peo5K', 'user', '2025-01-06 09:23:02', '2025-01-06 09:23:02'),
-(5, 'anis', '$2y$12$QxC1LNB1CV0uQBWrbyKDv.cvlq92NXTh.otG0hfBQgsFBGwwhmjTS', 'user', '2025-01-06 09:29:27', '2025-01-06 09:29:27');
+INSERT INTO `users` (`id`, `nama_lengkap`, `username`, `password`, `role`, `created_at`, `updated_at`) VALUES
+(2, 'Admin', 'admin', 'admin123', 'admin', '2025-01-07 07:58:39', '2025-01-07 07:58:39'),
+(4, 'Edi Wicoro', 'edi07', 'edi123', 'user', '2025-01-07 01:38:40', '2025-01-07 01:38:40');
 
 --
 -- Indexes for dumped tables
@@ -54,7 +53,8 @@ INSERT INTO `users` (`id`, `username`, `password`, `role`, `created_at`, `update
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `username` (`username`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -64,7 +64,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
